@@ -27,7 +27,7 @@ int main(){
 listPointer create(){
     listPointer first;
     MALLOC(first, *first);
-    first->x = 1;
+    first->data = 1;
     first->next = NULL;
     return first;
 }
@@ -48,10 +48,11 @@ void insert(listPointer* first, listPointer x){
 
 void printList(listPointer first){
     printf("The List contains: ");
-    while(temp){
-        printf("%4d");
+    while(first){
+        printf("%4d", first->data);
         first = first->next;
     }
+    printf("\n\n");
 }
 
 void allFree(listPointer first){
