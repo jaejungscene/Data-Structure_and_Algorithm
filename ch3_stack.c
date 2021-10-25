@@ -3,14 +3,11 @@
 #include <string.h>
 #define STR_MAX 50
 
-//err1: 짝이 없는 첫 닫는괄호에 대한 변경사항 출력(shoud have been) -> errInfo에 두개 저장됨
-//err2: 마지막에 남은 짝이 없는 닫는괄호들에 대한 오류 출력(redundnt) -> errInfo에 저장되는 개수 알 수 없음
-//err3: 짝이 없는 상태로 열린 괄호가 끝났을 시(is not closed) -> errInfo에 저장되는 개수 알 수 없음
 typedef enum Type{no_err, err1, err2, err3}Type;
 
 typedef struct Result{
     Type type;
-    char errInfo[STR_MAX+1];//err시 출력할 괄호에대한 정보를 갖는다.
+    char errInfo[STR_MAX+1];
 }Result;
 
 typedef struct Data{
@@ -40,8 +37,8 @@ int main(){
 
 
 void get_str(Data* data){
-    memset(data->str, NULL, sizeof(data->str));
-    memset(data->result.errInfo, NULL, sizeof(data->result.errInfo));
+    memset(data->str, 0, sizeof(data->str));
+    memset(data->result.errInfo, 0, sizeof(data->result.errInfo));
     data->result.type = 0;
 
     printf("input your string: ");
@@ -73,15 +70,15 @@ void process_str(Data* data){
     for(int i=0; i<strlen(data->str); i++){
         if(data->str[i]=='(' || data->str[i]=='{' || data->str[i]=='['){
             top++;
-            stack[top] = data->str[i]; //push
+            stack[top] = data->str[i];
         }
         else if(data->str[i]==')' || data->str[i]=='}' || data->str[i]==']'){
             if(data->str[i] == pair(stack[top])){ //no_err
-                stack[top] = NULL; //pull
+                stack[top] = NULL;
                 top--;
             }
             else if(stack[0] == NULL){ //detect err2
-                if(data->result.type!=err2) //불필요한 중복 금지
+                if(data->result.type!=err2)
                     data->result.type = err2;
                 temp[0] = data->str[i]; //strcat()함수 활용을 위해
                 strcat(data->result.errInfo, temp);
@@ -105,22 +102,22 @@ void print_result(Data* data){
     switch (data->result.type)
     {
     case no_err:
-        printf("Your string is balanced.\n\n");
+        printf("** Your string is balanced.\n\n");
         break;
     case err1:
-        printf("Your is not balanced. \'%c\' should have been \'%c\'.\n\n", data->result.errInfo[0], data->result.errInfo[1]);
+        printf("** Your is not balanced. \'%c\' should have been \'%c\'.\n\n", data->result.errInfo[0], data->result.errInfo[1]);
         break;
     case err2:
         if(strlen(data->result.errInfo)>=2)
-            printf("Your is not balanced. \"%s\" are redundant.\n\n", data->result.errInfo);
+            printf("** Your is not balanced. \"%s\" are redundant.\n\n", data->result.errInfo);
         else
-            printf("Your is not balanced. \'%c\' is redundant.\n\n", data->result.errInfo[0]);
+            printf("** Your is not balanced. \'%c\' is redundant.\n\n", data->result.errInfo[0]);
         break;
     case err3:
         if(strlen(data->result.errInfo)>=2)
-            printf("Your is not balanced. \"%s\" are not closed.\n\n", data->result.errInfo);
+            printf("** Your is not balanced. \"%s\" are not closed.\n\n", data->result.errInfo);
         else
-            printf("Your is not balanced. \'%c\' is not closed.\n\n", data->result.errInfo[0]);
+            printf("** Your is not balanced. \'%c\' is not closed.\n\n", data->result.errInfo[0]);
     }
 }
 
