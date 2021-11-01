@@ -20,21 +20,21 @@ void delete_data(listPointer* start, listPointer *avail);
 void result_print(char request, Result result); //a,d만이 해당
 void order_Allprint(listPointer first);
 void reverse_Allprint(listPointer first);
-void all_free(listPointer first, listPointer avail);
+void all_free(listPointer first);
 
-void test(listPointer avail){ //extra(avail list 출력)
-    int count=0;
-    if(avail==NULL){
-        printf("avail List가 비어있습니다.\n");
-        return;
-    }
-    while(avail!=NULL){
-        count++;
-        printf("%d  ",avail->data);
-        avail = avail->link;
-    }
-    printf("(%d개)\n", count);
-}
+// void test(listPointer avail){ //extra(확인을 위해 avail list 출력)
+//     int count=0;
+//     if(avail==NULL){
+//         printf("avail List가 비어있습니다.\n");
+//         return;
+//     }
+//     while(avail!=NULL){
+//         count++;
+//         printf("%d  ",avail->data);
+//         avail = avail->link;
+//     }
+//     printf("(%d개)\n", count);
+// }
 
 int main(void){
     listPointer first=NULL, avail=NULL;
@@ -52,13 +52,14 @@ int main(void){
             reverse_Allprint(first);
         else if(request == 'q')
             break;
-        else if(request == 's') //extra (avail list 출력)
-            test(avail);
+        // else if(request == 's') //extra (확인을 위해 avail list 출력)
+        //     test(avail);
         else
             printf("이해할 수 없는 명령어 입니다.\n");
         printf("\n------------------------\n\n");
     }
-    all_free(first, avail);
+    all_free(first);
+    all_free(avail);
     printf("프로그램을 종료합니다. 감사합니다.\n");
 
     return 0;
@@ -100,6 +101,7 @@ Result add_data_process(listPointer* start, listPointer temp){
     printf("추가할 데이터를 입력하세요:");
     scanf("%d", &(temp->data));
     if((*start)==NULL){ //list에 어떤 chain도 없을 경우
+        result = True;
         temp->link = (*start);
         (*start) = temp;
     }
@@ -113,7 +115,7 @@ Result add_data_process(listPointer* start, listPointer temp){
         if(now!=NULL && now->data==temp->data){ //list 내에 같은 데이터가 있을 경우
             result = False;
         }
-        else{ //list내에 정상적으로 데이터를 넣는 경우(now가 null이라는 자체가 list에서 temp->data가 가장 큰 값임을 의미한다)
+        else{ //list내에 정상적으로 데이터를 넣는 경우
             result = True;
             temp->link = now;
             if(prev==now)//temp가 list에서 가장 작은 값인 경우
@@ -151,7 +153,7 @@ void delete_data(listPointer* start, listPointer *avail){
                 (*avail) = now;
                 (*start) = NULL;
             }
-            else{//list의 시작 노드가 바뀌어야 한다.
+            else{//list의 시작 노드가 바뀌하는 경우
                 (*start) = now->link;
                 now->link = (*avail);
                 (*avail) = now;
@@ -209,22 +211,13 @@ void reverse_Allprint(listPointer first){
     printf("\n");
 }
 
-void all_free(listPointer first, listPointer avail){
+void all_free(listPointer first){
     listPointer temp;
     if (first != NULL){
         temp = first->link;
         while(1){
             free(first);
             first = temp; 
-            if(temp==NULL){break;}
-            temp = temp->link;
-        }
-    }
-    if(avail != NULL){
-        temp = avail->link;
-        while(1){
-            free(avail);
-            avail = temp; 
             if(temp==NULL){break;}
             temp = temp->link;
         }

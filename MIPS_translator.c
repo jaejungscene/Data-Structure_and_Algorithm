@@ -9,19 +9,14 @@ typedef enum Group{G1, G2, G3}Group; //R-Type = {G1=(add,sub,and) / G2=(sll, srl
 void assembler(char* input, char* machineCode);
 void int_to_strBin(int n, int len, char* bin);
 void match_register(char* token, char* bin);
+void initialize(char (*machineCode)[33]);
 Group match_instruction(char* token, char* machineCode);
 
 int main(void){
     char input[20];
     char machineCode[MAX_LINE][33] = {0};
     int count;
-
-    for(int i=0; i<MAX_LINE; i++){//initialize as '0'
-        for(int j=0; j<32; j++){
-            machineCode[i][j] = '0';
-        }
-    }
-
+    initialize(machineCode);
     printf("Enter MIPS Assembly below line-by-line\n");
     printf("if you want to quit, enter (q)\n");
     printf("------------------------------------------\n");
@@ -29,7 +24,6 @@ int main(void){
         scanf("%[^\n]s", input);
         if(strlen(input)==1 && input[0]=='q')
             break;
-        
         assembler(input, machineCode[count]);
         scanf("%*c");
     }
@@ -38,8 +32,15 @@ int main(void){
     for(int i=0; i<count; i++){
         printf("%s\n", machineCode[i]);
     }
-
     return 0;
+}
+
+void initialize(char (*machineCode)[33]){
+    for(int i=0; i<MAX_LINE; i++){//initialize as '0'
+        for(int j=0; j<32; j++){
+            machineCode[i][j] = '0';
+        }
+    }
 }
 
 void assembler(char* input, char* machineCode){
