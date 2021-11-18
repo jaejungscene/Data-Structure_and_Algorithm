@@ -1,4 +1,5 @@
 test.c
+test_assign.c
 exe_file
 .vscode
 *.html
