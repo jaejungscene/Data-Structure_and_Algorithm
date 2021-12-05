@@ -45,24 +45,12 @@ bool visited[MAX_CITIES] = {false};
 basisNode graph[MAX_CITIES] = {0};
 treePointer treeHead = NULL;
 
-//test
-void test(treePointer node){
-    if(node){
-        test(node->leftChild);
-        printf("%s ", graph[node->cityID].cityName);
-        test(node->rightChild);
-    }
-    return;
-}
-
 int main(void){
     printf("도시 간 최소 비용 경로 안내 서비스에 오신 것을 환영합니다.\n")
     while(1){
         printf("-----------------------\n원하는 기능을 선택하세요\n");
         if(input_cities()==false) break; //프로그램 종료
         make_BST();
-        // test(treeHead); //<------test
-        // printf("\n"); //<--------test
         make_adjacency_list();
         connected_result();
 
