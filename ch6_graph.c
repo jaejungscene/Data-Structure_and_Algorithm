@@ -60,8 +60,8 @@ int main(void){
         printf("도시 간 경로 평가 서비스에 오신것을 환영합니다\n");
         if(input_cities()==false) break; //프로그램 종료
         make_BST();
-        // test(treeHead); //<------test
-        // printf("\n"); //<--------test
+        test(treeHead); //<------test
+        printf("\n"); //<--------test
         make_adjacency_list();
         connected_result();
 

@@ -9,6 +9,7 @@
 typedef struct adjNode* adjLink;
 typedef struct adjNode{
     short cityID;
+    int cost;
     adjLink next;
 }adjNode;
 
@@ -26,54 +27,78 @@ typedef struct treeNode
 } treeNode;
 
 //function frame
-bool input_cities();
+void input_cities();
 treePointer newNode(int k);
 treePointer insert(treePointer node, int k);
 void make_BST();
 short search_BST(treePointer node, char* cityName);
-void add_adjList(short cityID_1, short cityID_2);
+void add_adjList(short cityID_1, short cityID_2, int cost);
 void make_adjacency_list();
-void dfs(short cityID);
-void connected_result();
+
+// void dfs(short cityID);
+// void connected_result();
+
+void shortestPath(short start, int destination[], short pi[]);
+short choose(int distance[], bool found[]);
+void print_path(short s, short e, int distance[], short pi[]);
+void search_shortest_path();
+
 void free_BST(treePointer node);
 void free_list();
 void reset();
 
 //global variable
 short cities_num = 0;
-bool visited[MAX_CITIES] = {false};
+bool visited[MAX_CITIES] = {false}; //<----------------------불필요
 basisNode graph[MAX_CITIES] = {0};
 treePointer treeHead = NULL;
 
 int main(void){
-    printf("도시 간 최소 비용 경로 안내 서비스에 오신 것을 환영합니다.\n")
+    bool built_path = false;
+    int selection;
+    printf("도시 간 최소 비용 경로 안내 서비스에 오신 것을 환영합니다.\n");
     while(1){
-        printf("-----------------------\n원하는 기능을 선택하세요\n");
-        if(input_cities()==false) break; //프로그램 종료
-        make_BST();
-        make_adjacency_list();
-        connected_result();
-
-        reset();
+        printf("-----------------------\n");
+        printf("원하는 기능을 선택하세요\n1:입력 2:검색 3:종료\n");
+        scanf("%d", &selection);
+        if(selection == 1){
+            reset();
+            input_cities();
+            make_BST();
+            make_adjacency_list();
+            built_path = true;
+        }
+        else if(selection == 2){
+            if(built_path == false){
+                printf("아직 도시 간 도로 구축 데이터베이스가 만들어지지 않았습니다.\n");
+                continue;
+            }
+            search_shortest_path();
+        }
+        else if(selection == 3)
+            break;
+        else{
+            printf("잘못된 선택입니다.\n");
+            continue;
+        }
     }
     printf("서비스를 종료합니다\n");
     return 0;
 }
 
-bool input_cities(){
+void input_cities(){
     char input[(MAX_CITIES*MAX_NAME)+MAX_CITIES];
     char* token;
     int count;
     while(1){
         printf("도시 수를 입력해 주세요\n");
         scanf("%d%*c", &cities_num);
-        if(cities_num == 0) return false; //프로그램 종료 신호
         printf("도시 이름을 입력해 주세요\n");
         scanf("%[^\n]s", input);
 
         count = 0;
         token = strtok(input, " ");
-        while(token){ //입력한 도시 수가 일치하는지 확인하면서, 동시에 ajacency list의 biasis가 되는 Node들을 넣는다.
+        while(token){ //입력한 도시 수가 일치하는지 확인하면서, 동시에 ajacency list의 basis가 되는 Node들을 넣는다.
             if(count < cities_num){
                 strcpy(graph[count].cityName, token);
                 graph[count].next = NULL;
@@ -91,7 +116,6 @@ bool input_cities(){
             continue;
         }
     }
-    return true;
 }
 
 treePointer newNode(int k){
@@ -132,24 +156,23 @@ short search_BST(treePointer node, char* cityName){
         return search_BST(node->rightChild, cityName);
 }
 
-void add_adjList(short cityID_1, short cityID_2){
+void add_adjList(short cityID_1, short cityID_2, int cost){
     adjLink new_1 = (adjLink)malloc(sizeof(*new_1));
     adjLink new_2 = (adjLink)malloc(sizeof(*new_2));
 
     new_1->cityID = cityID_1;
-    new_1->next = NULL;
+    new_1->cost = cost;
     new_1->next = graph[cityID_2].next;
     graph[cityID_2].next = new_1;
 
     new_2->cityID = cityID_2;
-    new_2->next = NULL;
+    new_2->cost = cost;
     new_2->next = graph[cityID_1].next;
     graph[cityID_1].next = new_2;
 }
 
 void make_adjacency_list(){
     char relation[(MAX_NAME*2)+2] = {0};
-    char *token;
     short cityID_1, cityID_2;
     bool duplicate; //중복된 정보를 판단하기 위해
     adjLink temp; //중복된 정보를 판단하기 위해
@@ -158,18 +181,16 @@ void make_adjacency_list(){
     while(1){
         scanf("%s", relation);
         if(!strcmp(relation, ".")) break; //도시 구축 정보 입력 완료
-        token = strtok(relation, "-");
-        cityID_1 = search_BST(treeHead, token);
-        token = strtok(NULL, " ");
-        cityID_2 = search_BST(treeHead, token);
+        cityID_1 = search_BST(treeHead, strtok(relation, "-"));
+        cityID_2 = search_BST(treeHead, strtok(NULL, "-"));
         if(cityID_1 == -1 || cityID_2 == -1){ //존재하지 않는 도시 이름이 입력된 경우
             printf("도시 이름이 잘못 입력되었습니다\n");
             continue;
         }
         temp = graph[cityID_1].next;
         duplicate = false;
-        while(temp){//현재까지 만들어진 adjacency list에서 중복된 값이 있는지 확인
-            if(temp->cityID == cityID_2){//중복된 값이 존재할 경우
+        while(temp){//현재까지 만들어진 adjacency list에서 입력된 도시를 이미 가지고 있는지 확인
+            if(temp->cityID == cityID_2){
                 duplicate = true;
                 break;
             }
@@ -179,44 +200,135 @@ void make_adjacency_list(){
             printf("중복된 정보입니다\n");
             continue;
         }
-        add_adjList(cityID_1, cityID_2); //adjacency List에 추가
+        add_adjList(cityID_1, cityID_2, atoi(strtok(NULL, " "))); //adjacency List에 추가
     }
+    printf("도시 간 도록 구축 데이터베이스를 만들었습니다\n");
 }
 
-void dfs(short cityID){
-    adjLink nextLink;
-    visited[cityID] = true;
-    printf("%s ", graph[cityID].cityName);
-    for(nextLink = graph[cityID].next; nextLink; nextLink = nextLink->next){
-        if(!visited[nextLink->cityID])
-            dfs(nextLink->cityID);
+// void connected_result(void){
+//     int connection_num = 0;
+//     short cityID_num[MAX_CITIES] = {0};
+//     for(int i=0; i<cities_num; i++){
+//         if(!visited[i]){
+//             if(i>0) printf("  ,  ( ");
+//             else    printf("( ");
+//             dfs(i);
+//             printf(")");
+//             cityID_num[connection_num] = (short)i;
+//             connection_num++;
+//         }
+//     }
+//     if(connection_num > 1){
+//         printf(" 로 분리됩니다\n");
+//         printf("이 도로 구축은 전체 도시들을 연결하지 못하고 있습니다\n다음의 도로를 추천합니다\n");
+//         for(int i=0; i<connection_num-1; i++){
+//             printf("%s-%s\n", graph[cityID_num[i]].cityName, graph[cityID_num[i+1]].cityName);
+//         }
+//     }
+//     else{
+//         printf("\n성공적인 도로 구축 계획입니다\n");
+//     }
+// // }
+// void dfs(short cityID){
+//     adjLink nextLink;
+//     visited[cityID] = true;
+//     for(nextLink = graph[cityID].next; nextLink; nextLink = nextLink->next){
+//         if(!visited[nextLink->cityID])
+//             dfs(nextLink->cityID);
+//     }
+// }
+
+short choose(int distance[], bool found[]){
+    int i, min=INT32_MAX, minpos=-1;
+    for(i=0; i<cities_num; i++){
+        if(distance[i]<min && !found[i]){
+            min = distance[i];
+            minpos = i;
+        }
     }
+    return minpos;
 }
 
-void connected_result(void){
-    int connection_num = 0;
-    short cityID_num[MAX_CITIES] = {0};
+void shortestPath(short v, int distance[], short pi[]){
+    short i, u, w;
+    bool found[cities_num];
+    adjLink temp = graph[v].next;
+
     for(int i=0; i<cities_num; i++){
-        if(!visited[i]){
-            if(i>0) printf("  ,  ( ");
-            else    printf("( ");
-            dfs(i);
-            printf(")");
-            cityID_num[connection_num] = (short)i;
-            connection_num++;
-        }
+        found[i] = false;
+        pi[i] = -1;
+        distance[i] = INT32_MAX; //INT32_MAX == 2147483647
     }
-    if(connection_num > 1){
-        printf(" 로 분리됩니다\n");
-        printf("이 도로 구축은 전체 도시들을 연결하지 못하고 있습니다\n다음의 도로를 추천합니다\n");
-        for(int i=0; i<connection_num-1; i++){
-            printf("%s-%s\n", graph[cityID_num[i]].cityName, graph[cityID_num[i+1]].cityName);
-        }
+    while(temp){
+        distance[temp->cityID] = temp->cost;
+        temp = temp->next;
     }
-    else{
-        printf("\n성공적인 도로 구축 계획입니다\n");
+
+    found[v] = true;
+    distance[v] = 0;
+    for(i=0; i<cities_num-2; i++){
+        u = choose(distance, found); //한 노드의 shortest path 결정
+        if(u == -1)//더 이상 v에서 갈 수 없는 경로가 존재할 경우
+            break;
+        found[u] = true;
+        temp = graph[u].next;
+        while(temp){
+            if(!found[temp->cityID])
+                if(distance[u]+(temp->cost) < distance[temp->cityID]){
+                    distance[temp->cityID] = distance[u]+(temp->cost);
+                    pi[temp->cityID] = u;
+                }
+            temp = temp->next;
+        }
     }
 }
+
+void print_path(short s, short e, int distance[], short pi[]){
+    short stack[cities_num-2];
+    short top = 0, temp = e;
+    while(s!=pi[temp]){
+        stack[top] = pi[temp];
+        top++;
+        temp = pi[temp];
+    }
+    printf("%s-", graph[s].cityName);
+    top--;
+    while(top>=0){
+        printf("%s-",graph[stack[top]].cityName);
+        top--;
+    }
+    printf("%s-", graph[e].cityName);
+    printf("%d\n", distance[e]);
+}
+
+void search_shortest_path(){
+    char cityName[MAX_NAME+1];
+    short distance[cities_num], pi[cities_num];
+    short start, destination;
+
+    printf("출발 도시 이름을 입력하세요.\n");
+    scanf("%s", cityName);
+    start = search_BST(treeHead,cityName);
+    shortestPath(start, distance, pi);
+
+    while(1){
+        printf("**도착 도시 이름을 입력하세요 (종료 시 '.'입력)\n");
+        scanf("%s", cityName);
+        if(!strcmp(cityName, ".")) break;
+        destination = search_BST(treeHead, cityName);
+        if(destination == -1){
+            printf("잘못된 도시 이름입니다\n");
+            continue;
+        }
+        if(pi[destination] == -1){
+            printf("경로가 없습니다\n");
+            continue;
+        }
+        print_path(start, destination, distance, pi);
+    }
+    printf("**검색을 종료합니다\n");
+}
+
 
 void free_list(adjLink now){
     adjLink prev;
@@ -226,7 +338,6 @@ void free_list(adjLink now){
             free(prev);
     }
 }
-
 void free_BST(treePointer node){
     if(node){
         free_BST(node->leftChild);
@@ -235,8 +346,9 @@ void free_BST(treePointer node){
     }
     return;
 }
-
 void reset(){
+    if(cities_num==0) //이미 초기화 된 상태
+        return;
     free_BST(treeHead);
     treeHead = NULL;
     for(int i=0; i<cities_num; i++){
@@ -247,51 +359,37 @@ void reset(){
 }
 
 /*
-12
-
-mn cd ab gh qr ef uv ij kl op st wx
-
-ab-cd
-wx-uv
-st-uv
-mn-kl
-cd-ef
-wx-op
-mn-ij
-ab-kl
-cd-kl
-uv-qr
-op-qr
-ef-gh
-.
----------------
 9
 
-ZY XW TS VU RQ PO NM LK JI
+ab cd ef gh ij kl mn lp qu
 
-NM-LK
-ZY-XW
-TS-ZY
-PO-VU
-ZY-TS
+ab-cd-10
+ab-ef-19
+ef-kl-2
+kl-ij-21
+cd-gh-7
+gh-ij-6
+ab-kk-23
 
-LK-JI
-JI-NM
-XW-TS
-RQ-VU
-PO-RQ
-.
---------------
-NM-LK
-ZY-XW
-TS-ZY
-PO-VU
-LK-JI
-VU-NM
-JI-NM
-XW-TS
-RQ-VU
-PO-RQ
-ZY-VU
-.
+ab-kl-23
+mn-kl-13
+ab-mn-5
+gh-ef-5
+lp-qu-10
+
+
+7
+
+se si sug su in py an
+
+se-sug-7
+se-si-10
+se-su-15
+si-su-8
+si-in-5
+sug-su-6
+in-su-12
+in-py-6
+su-an-3
+an-py-1
 */
