@@ -56,8 +56,9 @@ void test(treePointer node){
 }
 
 int main(void){
+    printf("도시 간 최소 비용 경로 안내 서비스에 오신 것을 환영합니다.\n")
     while(1){
-        printf("도시 간 경로 평가 서비스에 오신것을 환영합니다\n");
+        printf("-----------------------\n원하는 기능을 선택하세요\n");
         if(input_cities()==false) break; //프로그램 종료
         make_BST();
         // test(treeHead); //<------test
@@ -66,7 +67,6 @@ int main(void){
         connected_result();
 
         reset();
-        printf("------------------------------\n");
     }
     printf("서비스를 종료합니다\n");
     return 0;
