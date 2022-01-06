@@ -7,24 +7,26 @@
 #define MAX_NAME 10
 #define INT_MAX 2147483647
 
+/*  adjacency list로 Dijkstra's algorithm을 적용  */
+
 typedef struct adjNode* adjLink;
 typedef struct adjNode {
-    short cityID;
-    int cost;
-    adjLink next;
+  short cityID;
+  int cost;
+  adjLink next;
 }adjNode;
 
 typedef struct basisNode {
-    char cityName[MAX_NAME + 1];
-    adjLink next;
+  char cityName[MAX_NAME + 1];
+  adjLink next;
 }basisNode;
 
 typedef struct treeNode* treePointer;
 typedef struct treeNode
 {
-    short cityID;
-    treePointer leftChild;
-    treePointer rightChild;
+  short cityID;
+  treePointer leftChild;
+  treePointer rightChild;
 } treeNode;
 
 //function frame
@@ -49,36 +51,36 @@ basisNode graph[MAX_CITIES] = { 0 };
 treePointer treeHead = NULL;
 
 int main(void) {
-    bool built_path = false;
-    int selection;
-    printf("도시 간 최소 비용 경로 안내 서비스에 오신 것을 환영합니다.\n");
-    while (1) {
-        printf("-----------------------\n");
-        printf("원하는 기능을 선택하세요\n1:입력 2:검색 3:종료\n");
-        scanf("%d", &selection);
-        if (selection == 1) {
-            reset();
-            input_cities();
-            make_BST();
-            make_adjacency_list();
-            built_path = true;
-        }
-        else if (selection == 2) {
-            if (built_path == false) {
-                printf("아직 도시 간 도로 구축 데이터베이스가 만들어지지 않았습니다.\n");
-                continue;
-            }
-            search_shortest_path();
-        }
-        else if (selection == 3)
-            break;
-        else {
-            printf("잘못된 선택입니다.\n");
-            continue;
-        }
+  bool built_path = false;
+  int selection;
+  printf("도시 간 최소 비용 경로 안내 서비스에 오신 것을 환영합니다.\n");
+  while (1) {
+    printf("-----------------------\n");
+    printf("원하는 기능을 선택하세요\n1:입력 2:검색 3:종료\n");
+    scanf("%d", &selection);
+    if (selection == 1) {
+      reset();
+      input_cities();
+      make_BST();
+      make_adjacency_list();
+      built_path = true;
     }
-    printf("서비스를 종료합니다\n");
-    return 0;
+    else if (selection == 2) {
+      if (built_path == false) {
+        printf("아직 도시 간 도로 구축 데이터베이스가 만들어지지 않았습니다.\n");
+        continue;
+      }
+      search_shortest_path();
+    }
+    else if (selection == 3)
+      break;
+    else {
+      printf("잘못된 선택입니다.\n");
+      continue;
+    }
+  }
+  printf("서비스를 종료합니다\n");
+  return 0;
 }
 
 void input_cities() {

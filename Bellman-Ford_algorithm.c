@@ -7,6 +7,8 @@
 #define MAX_NAME 10
 #define INT_MAX 2147483647
 
+/*  adjacency matrix로 Bellman-Ford algorithm 적용  */
+
 typedef struct adjNode* adjLink;
 typedef struct adjNode {
     short cityID;

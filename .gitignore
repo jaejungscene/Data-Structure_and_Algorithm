@@ -1,7 +1,7 @@
-test.c
-test_assign.c
+test*.c
 exe_file
 .vscode
 *.html
 *.sln
 window-test
+참고자료
