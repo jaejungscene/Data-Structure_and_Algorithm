@@ -1,5 +1,5 @@
 test*.c
-exe_file
+.exe_file
 .vscode
 *.html
 *.sln
