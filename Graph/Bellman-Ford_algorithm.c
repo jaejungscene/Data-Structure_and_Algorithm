@@ -98,7 +98,7 @@ bool it_is_same(int dist[], int dist_temp[]){
             result = false;
         dist[i] = dist_temp[i];
     }
-    return true;
+    return result;
 }
 
 void Bellman_Ford(int start, int distance[], int pi[]) {
