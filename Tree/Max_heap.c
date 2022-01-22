@@ -29,7 +29,6 @@ void push(int v){
   else{
     heapSize++;
     int n;
-    element temp;
     heap[heapSize].value = v;
     for(n=heapSize; (heap[n/2].value < heap[n].value)&&(n>1) ; n/=2){
       swap(&heap[n/2], &heap[n]);
