@@ -18,22 +18,24 @@ typedef struct node{
 nodeType match_data(char data);
 inputType examin_expr(char *expr, int len);
 treePointer createNode(char data);
-treePointer createTree(char expr[]);
+treePointer MYcreateTree(char expr[]);
+treePointer BESTcreateTree(char** expr);
+
 int calculation(treePointer ptr);
 void free_tree(treePointer ptr);
 
-void test_inorder_print(treePointer ptr){ //<-----------------test
+void test_print(treePointer ptr){ //<-----------------test
     if(ptr){
-        test_inorder_print(ptr->left);
+        test_print(ptr->left);
         printf("%3c", ptr->data);
-        test_inorder_print(ptr->right);
+        test_print(ptr->right);
     }
     return;
 }
 
 int main(void){
     treePointer treeHead = NULL;
-    char expr[MAX_INPUT+1] = {"+*ADE"};
+    char expr[MAX_INPUT+1];
     inputType exprType;
 
     while(1){
@@ -46,15 +48,17 @@ int main(void){
         }
         else if(exprType == normal){
             int result = 0;
-            treeHead = createTree(expr);
+            // treeHead = MYcreateTree(expr);
+            char* ptr = expr;
+            treeHead = BESTcreateTree(&ptr);
             result = calculation(treeHead);
-            test_inorder_print(treeHead); //<-----------------------test
+            test_print(treeHead); //<-----------------------test
             printf("\n");                  //<-----------------------test
-            printf("계산 결과는 %d입니다.\n\n", result);
-            free_tree(treeHead);
+            printf("계산 결과는 %d입니다.\nfree: ", result);
+            free_tree(treeHead); printf("\n\n");
         }
         else if(exprType == terminate){
-            printf("프로그램을 종료합니다.\n");
+            printf("프로그램을 종료합니다.\n");
             break;
         }
     }
@@ -132,14 +136,14 @@ int calculation(treePointer ptr){ //함수의 argument(tree)는 무조건 오류
     }
 }
 
-
-treePointer createTree(char expr[]){ //함수의 argument(given expression)는 무조건 오류가 없는 정상적인 expression이다.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+treePointer MYcreateTree(char expr[]){ //함수의 argument(given expression)는 무조건 오류가 없는 정상적인 expression이다.
     treePointer ptr = createNode(*expr);
     if(ptr->type == operator){
-        ptr->left = createTree(expr+1);
+        ptr->left = MYcreateTree(expr+1);
         if(match_data(*(expr+1)) == operand) //다음 번째 expression의 문자가 operand이면 
         {
-            ptr->right = createTree(expr+2);
+            ptr->right = MYcreateTree(expr+2);
         }
         else //다음 번째 expression의 문자 operator이면
         { //이미 만들어진 left의 subtree에서 가장 오른쪽 문자에(leaf node) 다음 문자가 right child가 되어야 한다.
@@ -151,7 +155,7 @@ treePointer createTree(char expr[]){ //함수의 argument(given expression)는 �
             while(subtree->data != *(expr)){ //바로 다음 번째 expression의 문자는 이미 검증이된 상태
                 expr = expr+1;
             }
-            ptr->right = createTree(expr+1);
+            ptr->right = MYcreateTree(expr+1);
         }
         return ptr;
     }
@@ -160,11 +164,23 @@ treePointer createTree(char expr[]){ //함수의 argument(given expression)는 �
     }
 }
 
+treePointer BESTcreateTree(char** expr){
+    treePointer ptr = createNode(**expr);
+    if(ptr->type == operator){
+        (*expr)++;
+        ptr->left = BESTcreateTree(expr);
+        (*expr)++;
+        ptr->right = BESTcreateTree(expr);
+    }
+    return ptr;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void free_tree(treePointer ptr){
     if(ptr){
         free_tree(ptr->left);
         free_tree(ptr->right);
-        printf("free : %c\n", ptr->data); //<-------------------test
+        printf("%c ", ptr->data); //<-------------------test
         free(ptr);
     }
     return;
@@ -173,9 +189,18 @@ void free_tree(treePointer ptr){
 /*
 
 ++3*426
+result : 17
+
 -+*235/84
+result : 9
+
 +7/-/*54264
+result : 8
+
 *+27+45
+result : 81
+
 *+-/62*1542
+result : 4
 
 */
