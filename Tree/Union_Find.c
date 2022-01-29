@@ -16,22 +16,26 @@ void SimpleUnion(int i, int j){
   parent[i] = j;
 }
 
-int SimpleFine(int i){
+int SimpleFind(int i){
   for(; parent[i]>=0; i=parent[i]);
   return i;
 }
 
 void weightedUnion(int i, int j){
   //if the number of nodes in tree i is less than the number in tree j then make j the parent of i
-  int temp = parent[i] + parent[j];
-  if(parent[i] > parent[j]){
-    parent[i] = j; //make j the new root
-    parent[j] = temp;
+  if (parent[i] < 0 && parent[j] < 0){
+    int temp = parent[i] + parent[j];
+    if (parent[i] > parent[j]){
+      parent[i] = j; // make j the new root
+      parent[j] = temp;
+    }
+    else{
+      parent[j] = i; // make i the new root
+      parent[i] = temp;
+    }
   }
-  else{
-    parent[j] = i; //make i the new root
-    parent[i] = temp;
-  }
+  else
+    weightedUnion(SimpleFind(i), SimpleFind(j));
 }
 
 int collapsingFind(int i){
@@ -47,24 +51,18 @@ int collapsingFind(int i){
 
 void print(){
   for(int i=0; i<MAX_VERTIECS; i++)
-    printf("%2d", parent[i]);
+    printf("%4d", parent[i]);
   printf("\n");
 }
 
 int main(void){
   initialize();
 
-  weightedUnion(0,1);
+  weightedUnion(0,5);
+  print();
   weightedUnion(2,3);
-  weightedUnion(4,5);
-  weightedUnion(6,7);
   print();
-
-  weightedUnion(0,2);
-  weightedUnion(4,6);
-  print();
-
-  weightedUnion(0,4);
+  weightedUnion(3,5);
   print();
 
   printf("\n\n");

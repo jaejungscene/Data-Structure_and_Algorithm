@@ -6,6 +6,7 @@
 #define MAX_VERTICES 30
 #define MIN2(x,y) ((x) < (y) ? (x) : (y))
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 *  low(u) = min {   
 *                  dfn(u) ,
@@ -54,25 +55,26 @@ void  initialize(void)
     articulation_point[i] = false;
     dfn[i] = low[i] = -1;
   }
+  num=0;
 }
 
-void dfnlow(int u, int v)
-{
-  nodePointer ptr;
-  int w;
-  dfn[u] = low[u] = num++;
-  for (ptr = graph[u]; ptr; ptr = ptr->link)
-  {
-    w = ptr->vertex;
-    if (dfn[w] < 0)
-    { /* unvisited vertex */
-      dfnlow(w, u);
-      low[u] = MIN2(low[u], low[w]);
-    }
-    else if (w != v) /* (u,w) is a back edge */
-      low[u] = MIN2(low[u], dfn[w]);
-  }
-}
+// void dfnlow(int u, int v)
+// {
+//   nodePointer ptr;
+//   int w;
+//   dfn[u] = low[u] = num++;
+//   for (ptr = graph[u]; ptr; ptr = ptr->link)
+//   {
+//     w = ptr->vertex;
+//     if (dfn[w] < 0)
+//     { /* unvisited vertex */
+//       dfnlow(w, u);
+//       low[u] = MIN2(low[u], low[w]);
+//     }
+//     else if (w != v) /* (u,w) is a back edge */
+//       low[u] = MIN2(low[u], dfn[w]);
+//   }
+// }
 
 void bicon(int u, int v)
 {
@@ -121,6 +123,7 @@ void print_result(){
   printf("\n------------------------------------------------------");
   
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 int createGraph();
 void createNewNode();

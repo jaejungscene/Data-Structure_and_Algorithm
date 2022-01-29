@@ -43,7 +43,6 @@ void pop(){
   }
   else{
     printf("max value : %d\n\n", heap[1].value);
-    element temp;
     int n = 1;
     heap[1] = heap[heapSize];
     heapSize--;
