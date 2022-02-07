@@ -63,7 +63,7 @@ void iterInsert(threadedPointer node){
 void createTree(){
   char input[MAX_INPUT];
   printf("%s\n", input);
-  printf("Enter sequence\n");
+  printf("Enter sequence (tree's made by method of inserting of BST)\n");
   scanf("%s", input);
   threadedPointer new;
   for(int i=0; i<strlen(input); i++){
@@ -73,16 +73,15 @@ void createTree(){
 }
 
 void inorder(threadedPointer ptr){//LVR
-  printf("%c", ptr->data);
   if(ptr->leftThread==false)
     inorder(ptr->leftChild);
   else
-    printf("%c", (ptr->leftChild)->data);
-  
+    printf("%3c", (ptr->leftChild)->data);
+  printf("%c", ptr->data);
   if(ptr->rightThread==false)
     inorder(ptr->rightChild);
   else
-    printf("%c", (ptr->rightChild)->data);
+    printf("%-3c", (ptr->rightChild)->data);
 
   return;
 }
@@ -107,6 +106,13 @@ void tinorder(threadedPointer tree)
       printf("%3c", temp->data);
 } }
 
+void freeTree(threadedPointer now){
+  if(now->leftThread == false)
+    freeTree(now->leftChild);
+  if(now->rightThread == false)
+    freeTree(now->rightChild);
+  free(now);
+}
 
 int main(){
   root = (threadedPointer)malloc(sizeof(threadedTree));
@@ -115,16 +121,20 @@ int main(){
   root->rightChild = root; root->rightThread = false;
 
   createTree();
-  // printf("%c\n",((((root->leftChild)->rightChild)->leftChild)->leftChild)->data);
+
+  printf("--- tinorder ---\n");
   tinorder(root->leftChild);
-  printf("\n\n");
+  printf("\n--- inorder ---\n");
   inorder(root->leftChild);
 
+  freeTree(root->leftChild);
+  free(root);
 }
 
 /*
 EACBDGF
-
+      (root == @)
+          /
         E
     /       \
   /           \
