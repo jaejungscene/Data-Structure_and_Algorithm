@@ -1,3 +1,5 @@
+//코드 출처 : https://www.programiz.com/dsa/avl-tree
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
