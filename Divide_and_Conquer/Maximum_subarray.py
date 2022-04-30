@@ -42,7 +42,7 @@ def Find_Maximum_subarray(A, low, high):
   else:
     return (cross_low, cross_high, cross_sum)
 
-
+print()
 A = [None, -2,1,-3,4,-1,2,1,-5,4]
 print(f"Array = {A}")  
 (i, j, sum) = Find_Maximum_subarray(A, 1, len(A)-1)
@@ -56,3 +56,50 @@ print(f"Array = {A}")
 print(f"sum = {sum}")
 print(f"Max_Subarray = {A[i:j+1]}")
 print()
+print('-'*30)
+
+###########################################################################################
+###########################################################################################
+#### dynamic programming version
+
+def maximum_subarray(A):
+  OPT = [ 0 for i in range(len(A)) ]
+  INFO = [ 0 for i in range(len(A)) ]
+  max = -100000
+  max_index = 1
+
+  for i in range(1, len(A)):
+    if (OPT[i-1] + A[i]) > A[i]:
+      OPT[i] = OPT[i-1] + A[i]
+    else:
+      OPT[i] = A[i]
+      INFO[i] = 1
+    if OPT[i] > max:
+      max = OPT[i]
+      max_index = i
+  
+  return (OPT, INFO, max, max_index)
+
+def find_lower_bound(INFO, max_index):
+  for i in range(max_index, 0, -1):
+    if INFO[i] == 1:
+      lower_bound_index = i
+      break
+  return lower_bound_index
+
+
+A = [None, 3, 1, 2]
+OPT, INFO, max, max_index = maximum_subarray(A)
+lower_bound_index = find_lower_bound(INFO, max_index)
+
+print('Array =', A)
+print('sum =', max)
+print('Max subarray =', A[lower_bound_index : max_index+1], 'from', lower_bound_index,'to',max_index)
+print()
+
+################################
+# [None, -2, -3, 4, -1, -2, 1, 5, -3]  -> [4,-1,-2,1,5]
+# [None, -3, 1, -8, 12, 0, -3, 5]  ->  [12,0,-3,5]
+# [None, -2, 1, -3, 4, -1, 2, 1, -5, 4]  ->  [4,-1,2,1]
+#
+################################
