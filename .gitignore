@@ -1,7 +1,9 @@
 test
+test.txt
 .exe_file
 .vscode
 *.html
 *.sln
 window-test
 참고자료
+.ipynb_checkpoints
