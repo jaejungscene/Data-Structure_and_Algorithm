@@ -1,3 +1,7 @@
+import sys                                                            
+sys.path.append("/Users/jaejungscene/Projects/DataStructure_and_Algorithm")
+from Tree.min_heap import insert, extract_min;
+
 class Node:
     def __init__(self):
         self.freq = None
@@ -53,53 +57,10 @@ class Leaf:
 # 7주차 algorithm 강의노트 31 page에서 확인할 수 있다.
 # C = [ None, Leaf('f',5), Leaf('e',9), Leaf('c',12), Leaf('b',13), Leaf('d',16), Leaf('a',45) ] # case 1
 # C = [ None, Leaf('z',2), Leaf('k',7), Leaf('m',24), Leaf('c',32), Leaf('u',37), Leaf('d',42), Leaf('l',42), Leaf('e',120) ] # case 2
-C = [ None, Leaf('f',5), Leaf('e',9), Leaf('c',12), Leaf('b',13), Leaf('a',45) ] # case 3
+# C = [ None, Leaf('f',5), Leaf('e',9), Leaf('c',12), Leaf('b',13), Leaf('a',45) ] # case 3
+C = [ None, Leaf('o',3), Leaf('a',8), Leaf('i',10), Leaf('t',12), Leaf('e',24), Leaf('s',33), Leaf('u',57) ] # case 4
 
 C[0] = len(C)-1
-
-
-# def build_min_heap(C):
-
-def swap(Q, a, b):
-  tmp = Q[a]
-  Q[a] = Q[b]
-  Q[b] = tmp
-
-def insert(Q, z):
-  Q[0] += 1
-  Q[Q[0]] = z
-  current = Q[0]
-  while True:
-    if current == 1:
-      break
-    if Q[current].getfreq < Q[current//2].getfreq:
-      swap(Q, current, current//2)
-      current = current//2
-    else:
-      break
-
-def extract_min(Q):
-  rtr_value = Q[1]
-  Q[1] = Q[Q[0]]
-  Q[Q[0]] = None
-  Q[0] -= 1
-  current = 1
-  while True:
-    if current*2 > Q[0]:
-      break
-    if current*2 == Q[0]:
-      tmp = current*2
-    else:
-      if Q[current*2+1].getfreq >= Q[current*2].getfreq:
-        tmp = current*2
-      else:
-        tmp = current*2+1
-    if Q[current].getfreq > Q[tmp].getfreq:
-      swap(Q, current, tmp)
-    else:
-      break
-    current = tmp
-  return rtr_value  
   
 def build_huffman_tree(C):
   for i in range(C[0]-1):
@@ -126,7 +87,16 @@ def find_print_code(Now, code): # preorder travel and print code
     print( '(%c, %2d) :'%(Now.getchar, Now.getfreq), code[:p] )
   p -= 1
 
+def preorder(root):
+  if isinstance(root, Node):
+    print(root.getfreq,' ', end='')
+    preorder(root.getLeft)
+    preorder(root.getRight)
+  else:
+    print('(',root.getchar,root.getfreq,') ', end='')
 
-code = [None,None,None,None,None,None,None,None,None,None]
+code = [None,None,None,None,None,None,None,None,None,None,None]
 root = build_huffman_tree(C)
+preorder(root)
+print()
 find_print_code(root, code)

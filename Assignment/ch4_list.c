@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define MALLOC(a, b) a = (listPointer)malloc(b);
+
 #define MAX_SIZE 30
 
 typedef enum Result{True, False}Result; //result가 True이면 결과가 성공적으로 도출되었다는 의미
