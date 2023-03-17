@@ -1,4 +1,10 @@
-//행렬에서 0인 부분들을 표현하지 않도록하여 공간 효율성을 높은 행렬
+/**
+ * Sparse matrix is a matrix that increases spatial efficiency
+ * by not representing zero parts of a matrix.
+ * And this file suggests a code to improve transpose operation
+ * of this kind of sparse matrix.
+**/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
