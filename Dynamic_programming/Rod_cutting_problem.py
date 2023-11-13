@@ -3,6 +3,32 @@ p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30] # each index's price
 r = [ 0 for i in range(len(p)) ] # optimal revenue = maximum revenue to get
 s = [ 0 for i in range(len(p)) ] # value of first piece size(i=index) to be selected as optimal solution
 
+opt = [ 0 for _ in range(len(p)) ]
+mark = [ 0 for _ in range(len(p)) ]
+
+for n in range(1, len(opt)):
+  temp = -10000
+  for k in range(1, n+1):
+    # print(k, n-k, p[k], opt[n-k])
+    if temp < p[k]+opt[n-k]:
+      temp = p[k]+opt[n-k]
+      mark[n] = n-k
+  opt[n] = temp
+
+def search(n: int, used: list) -> None:
+  if n == 0:
+    return 0
+  used.append(n-mark[n])
+  search(mark[n], used)
+
+n = 2
+used = []
+print("opt:", opt)
+print("mark:", mark)
+search(n, used)
+print("used:", used)
+print()
+      
 
 ########  recursive version  ##############################################
 def recursive_CUT_ROD(p, n):
@@ -17,7 +43,7 @@ def recursive_CUT_ROD(p, n):
 
 for n in range(1, len(r)):
   r[n] = recursive_CUT_ROD(p, n)
-print(r)
+print("recursive:", r)
 print()
 
 
@@ -45,8 +71,8 @@ def find_pieces(i, s):
 
 
 r, s = bottom_up_CUT_ROD(p)
-print(r)
-print(s)
+print("dynamic r:",r)
+print("dynamic s:",s)
 print()
 
 index = 8
