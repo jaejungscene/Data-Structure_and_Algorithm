@@ -1,3 +1,7 @@
+"""
+설탕 배달
+https://www.acmicpc.net/problem/2839
+"""
 import sys
 def input():
     return sys.stdin.readline().rstrip()
@@ -17,3 +21,15 @@ while N!=0:
         N -= 3
     # print(N)
 print(answer)
+
+"""
+18
+
+4
+
+
+
+4
+
+-1
+"""

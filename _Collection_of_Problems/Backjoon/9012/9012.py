@@ -1,3 +1,7 @@
+"""
+괄호
+https://www.acmicpc.net/problem/9012
+"""
 import sys
 def input():
     return sys.stdin.readline().rstrip()

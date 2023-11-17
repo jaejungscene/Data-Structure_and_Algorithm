@@ -1,3 +1,8 @@
+"""
+마법사 상어와 비바라기
+https://www.acmicpc.net/problem/21610
+"""
+
 from collections import deque
 
 N, M = map(int, input().split())
@@ -45,3 +50,18 @@ for row in maps:
         cnt += v
 
 print(cnt)
+
+"""
+5 4
+0 0 1 0 2
+2 3 2 1 0
+4 3 2 9 0
+1 0 2 9 0
+8 8 2 1 0
+1 3
+3 4
+8 1
+4 8
+
+77
+"""

@@ -1,3 +1,7 @@
+"""
+치킨배달
+https://www.acmicpc.net/problem/15686
+"""
 from itertools import combinations
 result = 99999999
 MAX_N = 50

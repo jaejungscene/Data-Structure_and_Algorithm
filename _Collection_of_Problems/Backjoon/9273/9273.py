@@ -1,3 +1,7 @@
+"""
+정제헌을 팔자!
+https://www.acmicpc.net/problem/9273
+"""
 import sys
 def input():
     return sys.stdin.readline().rstrip()

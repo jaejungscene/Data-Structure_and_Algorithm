@@ -1,3 +1,7 @@
+"""
+구슬 탈출 2
+https://www.acmicpc.net/problem/13460
+"""
 from collections import defaultdict, deque
 
 N, M = map(int, input().split())
@@ -80,3 +84,14 @@ def play(N, M, board):
     return -1
 
 print(play(N, M, board))
+
+"""
+5 5
+#####
+#..B#
+#.#.#
+#RO.#
+#####
+
+1
+"""

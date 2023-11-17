@@ -1,4 +1,7 @@
 """
+평범한 배낭
+https://www.acmicpc.net/problem/12865
+
 row: limit weight
 column: items (item starts from 1, so 0 item means no item)
 """
