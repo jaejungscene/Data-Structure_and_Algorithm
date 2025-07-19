@@ -45,4 +45,5 @@ for i in range(size):
 
 for i in range(T):
     x, y = map(int, input().split(" "))
-    print(cost[x][y])        
+    print(cost[x][y])
+    
